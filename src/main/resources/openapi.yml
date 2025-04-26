@@ -1,0 +1,255 @@
+openapi: 3.0.0
+info:
+  title: API de Estrellas y Cobranza
+  version: 1.0.0
+  description: API para gestionar estrellas, categorías y agencias de cobranza
+
+servers:
+  - url: http://localhost:8080
+    description: Servidor local de desarrollo
+
+tags:
+  - name: Stars
+    description: Operaciones relacionadas con estrellas
+  - name: Categories
+    description: Operaciones relacionadas con categorías
+  - name: Agencias
+    description: Operaciones relacionadas con agencias
+
+paths:
+  /api/stars:
+    post:
+      tags:
+        - Stars
+      summary: Crear una nueva estrella
+      description: Crea una nueva estrella en el sistema
+      operationId: createStar
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  maxLength: 60
+                  description: Nombre de la estrella
+                  example: Estrella Oro
+      responses:
+        '201':
+          description: Estrella creada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Star'
+        '400':
+          description: Datos de entrada inválidos
+
+  /api/categories:
+    post:
+      tags:
+        - Categories
+      summary: Crear una nueva categoría
+      description: Crea una nueva categoría en el sistema
+      operationId: createCategory
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - percentageLow
+                - percentageHigh
+                - sellLow
+                - sellHigh
+              properties:
+                name:
+                  type: string
+                  maxLength: 30
+                  description: Nombre de la categoría
+                  example: Categoría A
+                percentageLow:
+                  type: number
+                  format: decimal
+                  minimum: 0
+                  maximum: 100
+                  description: Porcentaje mínimo de la categoría
+                  example: 90.00
+                percentageHigh:
+                  type: number
+                  format: decimal
+                  minimum: 0
+                  maximum: 100
+                  description: Porcentaje máximo de la categoría
+                  example: 95.00
+                sellLow:
+                  type: number
+                  format: decimal
+                  minimum: 0
+                  description: Valor mínimo de venta
+                  example: 0.00
+                sellHigh:
+                  type: number
+                  format: decimal
+                  minimum: 0
+                  description: Valor máximo de venta
+                  example: 100.00
+      responses:
+        '201':
+          description: Categoría creada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        '400':
+          description: Datos de entrada inválidos
+
+  /api/agencias:
+    post:
+      tags:
+        - Agencias
+      summary: Crear una nueva agencia
+      description: Crea una nueva agencia en el sistema
+      operationId: createAgencia
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - category
+                - debit
+                - collection
+                - clients
+                - starId
+              properties:
+                category:
+                  type: integer
+                  description: ID de la categoría
+                  example: 1
+                debit:
+                  type: number
+                  format: decimal
+                  minimum: 0
+                  description: Monto de deuda
+                  example: 1000.00
+                collection:
+                  type: number
+                  format: decimal
+                  minimum: 0
+                  description: Monto de cobranza
+                  example: 500.00
+                clients:
+                  type: integer
+                  minimum: 0
+                  description: Número de clientes
+                  example: 10
+                starId:
+                  type: integer
+                  description: ID de la estrella
+                  example: 1
+      responses:
+        '201':
+          description: Agencia creada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Agencia'
+        '400':
+          description: Datos de entrada inválidos
+        '404':
+          description: Categoría o Estrella no encontrada
+
+components:
+  schemas:
+    Star:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID único de la estrella
+          example: 1
+        name:
+          type: string
+          maxLength: 60
+          description: Nombre de la estrella
+          example: Estrella Oro
+
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID único de la categoría
+          example: 1
+        name:
+          type: string
+          maxLength: 30
+          description: Nombre de la categoría
+          example: Categoría A
+        percentageLow:
+          type: number
+          format: decimal
+          minimum: 0
+          maximum: 100
+          description: Porcentaje mínimo de la categoría
+          example: 90.00
+        percentageHigh:
+          type: number
+          format: decimal
+          minimum: 0
+          maximum: 100
+          description: Porcentaje máximo de la categoría
+          example: 95.00
+        sellLow:
+          type: number
+          format: decimal
+          minimum: 0
+          description: Valor mínimo de venta
+          example: 0.00
+        sellHigh:
+          type: number
+          format: decimal
+          minimum: 0
+          description: Valor máximo de venta
+          example: 100.00
+
+    Agencia:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID único de la agencia
+          example: 1
+        category:
+          $ref: '#/components/schemas/Category'
+        debit:
+          type: number
+          format: decimal
+          minimum: 0
+          description: Monto de deuda
+          example: 1000.00
+        collection:
+          type: number
+          format: decimal
+          minimum: 0
+          description: Monto de cobranza
+          example: 500.00
+        clients:
+          type: integer
+          minimum: 0
+          description: Número de clientes
+          example: 10
+        dateRegister:
+          type: string
+          format: date-time
+          description: Fecha y hora de registro
+          example: "2024-03-23T10:00:00"
+        star:
+          $ref: '#/components/schemas/Star' 
