@@ -3,36 +3,85 @@
 <head>
     <title>Login - Frescura</title>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/styles.css" rel="stylesheet">
+    <!-- Meta tags para mejorar la experiencia móvil -->
+    <meta name="theme-color" content="#0d6efd">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
-<body class="bg-light">
-    <div class="container">
-        <div class="row justify-content-center mt-5">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="text-center">Iniciar Sesión</h3>
-                    </div>
-                    <div class="card-body">
-                        <form th:action="@{/login}" method="post">
-                            <div class="mb-3">
-                                <label for="username" class="form-label">Usuario</label>
-                                <input type="text" class="form-control" id="username" name="username" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="password" class="form-label">Contraseña</label>
-                                <input type="password" class="form-control" id="password" name="password" required>
-                            </div>
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-primary">Ingresar</button>
-                            </div>
-                        </form>
-                    </div>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="card-header">
+                <h3 class="text-center mb-0">Iniciar Sesión</h3>
+            </div>
+            <div class="card-body">
+                <!-- Mensaje de error si existe -->
+                <div th:if="${param.error}" class="alert alert-danger" role="alert">
+                    Usuario o contraseña incorrectos
                 </div>
+                <div th:if="${param.logout}" class="alert alert-success" role="alert">
+                    Has cerrado sesión correctamente
+                </div>
+                
+                <form th:action="@{/login}" method="post" class="needs-validation" novalidate>
+                    <div class="mb-4">
+                        <label for="username" class="form-label">Usuario</label>
+                        <input type="text" 
+                               class="form-control" 
+                               id="username" 
+                               name="username" 
+                               required 
+                               autocomplete="username"
+                               placeholder="Ingresa tu usuario">
+                        <div class="invalid-feedback">
+                            Por favor ingresa tu usuario
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label for="password" class="form-label">Contraseña</label>
+                        <input type="password" 
+                               class="form-control" 
+                               id="password" 
+                               name="password" 
+                               required 
+                               autocomplete="current-password"
+                               placeholder="Ingresa tu contraseña">
+                        <div class="invalid-feedback">
+                            Por favor ingresa tu contraseña
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <span class="d-flex align-items-center justify-content-center">
+                                <span>Ingresar</span>
+                            </span>
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Validación del formulario
+        (function () {
+            'use strict'
+            var forms = document.querySelectorAll('.needs-validation')
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+    </script>
 </body>
 </html> 
